@@ -1,817 +1,1316 @@
-
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta
+  name="description"
+  content="An interactive experience examining how one-in-N risks feel at personal and population scale."
+>
 <title>The Risk Chamber</title>
-
 
 <style>
 :root {
   --ink:#090909;
-  --muted:#747478;
+  --muted:#717175;
   --line:#dedede;
   --soft:#f5f5f7;
-  --red:#e53935;
+  --page:#fff;
+  --red:#d92d20;
+  --dark:#080808;
 }
 
+* {
+  box-sizing:border-box;
+}
 
-• { box-sizing:border-box; }
+html {
+  scroll-behavior:smooth;
+}
 
 body {
-margin:0;
-color:var(--ink);
-background:#fff;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  margin:0;
+  background:var(--page);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
 }
 
 button,
-input {
-font:inherit;
+input,
+select,
+a {
+  font:inherit;
 }
 
-header {
-position:sticky;
-top:0;
-z-index:5;
-height:68px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 22px;
-border-bottom:1px solid var(--line);
-background:rgba(255,255,255,.92);
-backdrop-filter:blur(16px);
--webkit-backdrop-filter:blur(16px);
+a {
+  color:inherit;
 }
 
-header a {
-color:inherit;
-text-decoration:none;
+.site-header {
+  position:sticky;
+  top:0;
+  z-index:20;
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
 }
 
-header a:last-child {
-color:var(--muted);
-}
-
+.header-inner,
 main {
-max-width:920px;
-margin:auto;
-padding:60px 22px 90px;
+  width:min(960px,calc(100% - 44px));
+  margin:auto;
+}
+
+.header-inner {
+  min-height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+}
+
+.brand {
+  font-weight:800;
+  text-decoration:none;
+}
+
+.home-link {
+  color:var(--muted);
+  text-decoration:none;
+  white-space:nowrap;
+}
+
+.hero {
+  padding:67px 0 39px;
 }
 
 .eyebrow {
-color:var(--muted);
-font-size:12px;
-font-weight:800;
-letter-spacing:.14em;
-text-transform:uppercase;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.15em;
+  text-transform:uppercase;
 }
 
 h1 {
-margin:14px 0 22px;
-font-size:clamp(44px,9vw,78px);
-line-height:.94;
-letter-spacing:-.06em;
+  max-width:850px;
+  margin:15px 0 23px;
+  font-size:clamp(46px,8vw,80px);
+  line-height:.93;
+  letter-spacing:-.06em;
 }
 
 .lead {
-max-width:760px;
-color:var(--muted);
-font-size:21px;
-line-height:1.48;
+  max-width:780px;
+  margin:0;
+  color:var(--muted);
+  font-size:clamp(19px,3vw,24px);
+  line-height:1.5;
 }
 
-.intro-note {
-max-width:760px;
-margin-top:24px;
-padding-left:18px;
-border-left:3px solid #000;
-line-height:1.55;
+.experience {
+  overflow:hidden;
+  margin-top:37px;
+  border:1px solid var(--line);
+  border-radius:27px;
 }
 
-.panel {
-margin-top:38px;
-padding:clamp(20px,5vw,42px);
-border-radius:28px;
-background:var(--soft);
+.step {
+  display:none;
+  min-height:590px;
+  padding:clamp(26px,6vw,58px);
 }
 
-.fields {
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:16px;
+.step.active {
+  display:block;
+}
+
+.step-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:38px;
+}
+
+.step-number {
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.13em;
+}
+
+.step-progress {
+  display:flex;
+  gap:6px;
+}
+
+.step-dot {
+  width:38px;
+  height:5px;
+  border-radius:999px;
+  background:#ddd;
+}
+
+.step-dot.active {
+  background:#000;
+}
+
+.question {
+  max-width:780px;
+  margin:0 auto;
+  text-align:center;
+}
+
+.question h2 {
+  margin:0;
+  font-size:clamp(34px,6vw,58px);
+  line-height:1.02;
+  letter-spacing:-.05em;
+}
+
+.question-copy {
+  max-width:680px;
+  margin:18px auto 0;
+  color:var(--muted);
+  font-size:18px;
+  line-height:1.55;
+}
+
+.chamber-control {
+  max-width:650px;
+  margin:34px auto 0;
+}
+
+.range-header {
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:14px;
+}
+
+.range-label {
+  font-weight:800;
+}
+
+.range-value {
+  font-size:clamp(26px,5vw,42px);
+  font-weight:800;
+  letter-spacing:-.04em;
+}
+
+input[type="range"] {
+  width:100%;
+  accent-color:#000;
+  cursor:pointer;
+}
+
+.range-ends {
+  display:flex;
+  justify-content:space-between;
+  margin-top:7px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.cylinder-wrap {
+  position:relative;
+  width:min(330px,78vw);
+  margin:37px auto 30px;
+}
+
+.cylinder {
+  position:relative;
+  width:100%;
+  aspect-ratio:1;
+  border:2px solid #222;
+  border-radius:50%;
+  background:
+    radial-gradient(
+      circle at center,
+      #fff 0 17%,
+      #151515 17.5% 21%,
+      transparent 21.5%
+    ),
+    repeating-conic-gradient(
+      from -4.5deg,
+      #ececee 0deg 7deg,
+      #fff 7deg 8.8deg
+    );
+  box-shadow:
+    inset 0 0 0 12px #fff,
+    inset 0 0 0 14px #ccc;
+}
+
+.cylinder::before {
+  content:"";
+  position:absolute;
+  inset:34%;
+  border:2px solid #222;
+  border-radius:50%;
+  background:#fff;
+}
+
+.cylinder::after {
+  content:"";
+  position:absolute;
+  top:4%;
+  left:47%;
+  width:6%;
+  height:24%;
+  border-radius:999px;
+  background:var(--red);
+  box-shadow:0 0 0 4px #fff;
+}
+
+.cylinder-label {
+  position:absolute;
+  top:50%;
+  left:50%;
+  z-index:2;
+  width:90px;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+
+.cylinder-label strong {
+  display:block;
+  font-size:24px;
+  letter-spacing:-.04em;
+}
+
+.cylinder-label span {
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+.scale-note {
+  max-width:620px;
+  margin:0 auto;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  text-align:center;
+}
+
+.decision {
+  margin-top:31px;
+  text-align:center;
+}
+
+.decision-question {
+  margin-bottom:15px;
+  font-size:20px;
+  font-weight:800;
+}
+
+.decision-buttons {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
+
+.button {
+  padding:15px 22px;
+  border:0;
+  border-radius:999px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.button-dark {
+  background:#000;
+  color:#fff;
+}
+
+.button-light {
+  border:1px solid var(--line);
+  background:#fff;
+  color:#000;
+}
+
+.button-red {
+  background:var(--red);
+  color:#fff;
+}
+
+.button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline:3px solid #8eb5ff;
+  outline-offset:3px;
+}
+
+.response {
+  display:none;
+  max-width:650px;
+  margin:25px auto 0;
+  padding:19px 21px;
+  border-radius:16px;
+  background:var(--soft);
+  line-height:1.55;
+}
+
+.response.visible {
+  display:block;
+}
+
+.continue-row {
+  display:none;
+  justify-content:center;
+  margin-top:20px;
+}
+
+.continue-row.visible {
+  display:flex;
+}
+
+.dark-step {
+  background:var(--dark);
+  color:#fff;
+}
+
+.dark-step .step-number,
+.dark-step .question-copy,
+.dark-step .range-ends,
+.dark-step .scale-note {
+  color:#999;
+}
+
+.dark-step .step-dot {
+  background:#333;
+}
+
+.dark-step .step-dot.active {
+  background:#fff;
+}
+
+.population-form {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  max-width:700px;
+  margin:34px auto 0;
+  text-align:left;
 }
 
 .field label {
-display:block;
-margin-bottom:8px;
-font-weight:700;
+  display:block;
+  margin-bottom:8px;
+  color:#aaa;
+  font-size:13px;
+  font-weight:750;
 }
 
-.field input {
-width:100%;
-padding:16px;
-border:1px solid #ccc;
-border-radius:14px;
-background:#fff;
-font-size:22px;
+.field input,
+.field select {
+  width:100%;
+  padding:15px;
+  border:1px solid #444;
+  border-radius:13px;
+  background:#171717;
+  color:#fff;
 }
 
-.hint {
-margin-top:7px;
-color:var(--muted);
-font-size:13px;
-line-height:1.4;
+.population-result {
+  margin-top:42px;
+  text-align:center;
 }
 
-.source {
-margin-top:18px;
+.population-number {
+  display:block;
+  font-size:clamp(65px,14vw,130px);
+  font-weight:800;
+  line-height:.9;
+  letter-spacing:-.07em;
 }
 
-.source label {
-display:block;
-margin-bottom:8px;
+.population-label {
+  display:block;
+  margin-top:16px;
+  color:#aaa;
+  font-size:17px;
 }
 
-.source input {
-width:100%;
-padding:13px;
-border:1px solid #ccc;
-border-radius:12px;
-background:#fff;
+.people-grid {
+  display:grid;
+  grid-template-columns:repeat(40,1fr);
+  gap:3px;
+  max-width:700px;
+  margin:32px auto 0;
 }
 
-.actions {
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-top:20px;
+.person {
+  aspect-ratio:1;
+  border-radius:50%;
+  background:#333;
 }
 
-.actions button {
-padding:15px 22px;
-border:0;
-border-radius:999px;
-font-weight:750;
-cursor:pointer;
+.person.marked {
+  background:var(--red);
 }
 
-.primary {
-background:#000;
-color:#fff;
+.grid-key {
+  max-width:700px;
+  margin:10px auto 0;
+  color:#888;
+  font-size:12px;
+  text-align:left;
 }
 
-.secondary {
-border:1px solid #ccc !important;
-background:#fff;
-color:#000;
+.reflection {
+  max-width:720px;
+  margin:34px auto 0;
+  padding-top:25px;
+  border-top:1px solid #333;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:20px;
+  line-height:1.6;
+  text-align:left;
 }
 
-.result {
-padding:48px 0 18px;
-text-align:center;
+.comparison {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  max-width:750px;
+  margin:34px auto 0;
 }
 
-.big {
-font-size:clamp(48px,11vw,92px);
-font-weight:800;
-line-height:1;
-letter-spacing:-.06em;
+.comparison-card {
+  padding:23px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  text-align:left;
 }
 
-.sub {
-margin-top:10px;
-color:var(--muted);
-font-size:17px;
+.comparison-card span {
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.13em;
+  text-transform:uppercase;
 }
 
-.counter {
-margin-top:8px;
-color:var(--muted);
-font-size:14px;
+.comparison-card strong {
+  display:block;
+  margin:13px 0 8px;
+  font-size:27px;
+  line-height:1.05;
 }
 
-.chamber {
-display:grid;
-grid-template-columns:repeat(10,1fr);
-gap:6px;
-max-width:660px;
-margin:34px auto 8px;
+.comparison-card p {
+  margin:0;
+  color:var(--muted);
+  line-height:1.5;
 }
 
-.cell {
-aspect-ratio:1;
-border-radius:50%;
-background:#ddd;
-opacity:.6;
-transform:scale(.78);
-transition:
-background .25s,
-opacity .25s,
-transform .25s;
+.final-question {
+  max-width:760px;
+  margin:42px auto 0;
+  padding:29px;
+  border-radius:20px;
+  background:var(--soft);
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(21px,3vw,27px);
+  line-height:1.55;
 }
 
-.cell.active {
-background:var(--red);
-opacity:1;
+.sources {
+  padding:55px 0 80px;
 }
 
-.cell.flash {
-background:var(--red);
-opacity:1;
-animation:pulse .6s ease;
+.sources h2 {
+  margin:13px 0 20px;
+  font-size:clamp(31px,5vw,47px);
+  letter-spacing:-.045em;
 }
 
-@keyframes pulse {
-50% {
-transform:scale(1.25);
-}
-}
-
-.caption {
-min-height:22px;
-color:var(--muted);
-text-align:center;
+.source-link {
+  display:block;
+  margin:10px 0;
+  padding:17px 19px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  text-decoration:none;
+  line-height:1.45;
 }
 
-.note {
-margin-top:28px;
-padding-top:22px;
-border-top:1px solid #ccc;
-line-height:1.55;
+.source-link:hover {
+  border-color:#999;
 }
 
-.explain {
-padding:48px 0;
+.source-link strong {
+  display:block;
+  margin-bottom:4px;
 }
 
-.explain h2 {
-margin:12px 0 18px;
-font-size:clamp(32px,6vw,50px);
-line-height:1.02;
-letter-spacing:-.045em;
+.source-link span {
+  color:var(--muted);
+  font-size:14px;
 }
 
-.explain p {
-color:#333;
-line-height:1.65;
+.source-note {
+  margin-top:20px;
+  padding:19px 21px;
+  border-left:3px solid #000;
+  background:var(--soft);
+  line-height:1.55;
 }
 
-.formula {
-overflow-x:auto;
-padding:20px;
-border-radius:16px;
-background:#0a0a0a;
-color:#fff;
-font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+footer {
+  padding:30px 22px 50px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  text-align:center;
+  font-size:14px;
 }
 
-.checklist {
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-margin-top:24px;
-}
+@media (max-width:650px) {
+  .header-inner,
+  main {
+    width:min(100% - 30px,960px);
+  }
 
-.check {
-padding:20px;
-border:1px solid var(--line);
-border-radius:18px;
-line-height:1.5;
-}
+  .home-link {
+    font-size:13px;
+  }
 
-.check strong {
-display:block;
-margin-bottom:6px;
-}
+  .hero {
+    padding:43px 0 30px;
+  }
 
-.disclaimer {
-margin-top:36px;
-padding:20px;
-border-radius:18px;
-background:var(--soft);
-color:#444;
-line-height:1.55;
-}
+  .step {
+    min-height:620px;
+    padding:27px 20px 35px;
+  }
 
-@media (max-width:620px) {
-main {
-padding-top:42px;
-}
+  .population-form,
+  .comparison {
+    grid-template-columns:1fr;
+  }
 
-header a:last-child {
-font-size:14px;
-}
+  .decision-buttons {
+    flex-direction:column;
+  }
 
-.fields,
-.checklist {
-grid-template-columns:1fr;
-}
+  .decision-buttons .button {
+    width:100%;
+  }
 
-.actions {
-flex-direction:column;
+  .people-grid {
+    grid-template-columns:repeat(20,1fr);
+  }
 }
-
-.actions button {
-width:100%;
-}
-}
-
 </style>
 </head>
 
-
 <body>
 
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#">The Risk Chamber</a>
 
-<header>
-  <a href="#"><strong>Risk Chamber</strong></a>
-
-
-
-[Research Library ↗](https://propropro25.github.io/homebase/)
-
-
+    <a
+      class="home-link"
+      href="https://propropro25.github.io/homebase/"
+    >
+      Research Library ↗
+    </a>
+  </div>
 </header>
 
+<main>
 
-<main> 
+<section class="hero">
+  <div class="eyebrow">Interactive risk visualization</div>
 
-<div class="eyebrow">Interactive probability visualizer</div>
+  <h1>At what point would you pull the trigger?</h1>
 
+  <p class="lead">
+    A percentage can make a human consequence disappear. Remove the
+    percentage. Put one outcome inside a chamber. Then decide how many
+    empty chambers would make you comfortable choosing the risk.
+  </p>
+</section>
 
-<h1> How many pulls feel acceptable? </h1> 
+<section class="experience">
 
-<p class="lead">
-  Turn an abstract “one in N” estimate into a repeated decision.
-  Explore how a small probability changes when an exposure happens
-  more than once.
-</p>
+  <section class="step active" id="stepOne">
 
+    <div class="step-header">
+      <div class="step-number">STEP 01 / 03</div>
 
-<div class="intro-note">
-  This tool calculates probability. It does not determine whether a
-  medical product caused an event, estimate personal medical risk, or
-  tell anyone what decision to make.
-</div>
+      <div class="step-progress" aria-hidden="true">
+        <span class="step-dot active"></span>
+        <span class="step-dot"></span>
+        <span class="step-dot"></span>
+      </div>
+    </div>
 
+    <div class="question">
+      <h2>One chamber contains the outcome.</h2>
 
-<section class="panel">
+      <p class="question-copy">
+        You do not know which chamber it is. You only know the total
+        number of chambers. Choose the number that feels acceptable
+        before answering.
+      </p>
+    </div>
 
+    <div class="chamber-control">
+      <div class="range-header">
+        <span class="range-label">Number of chambers</span>
+        <span class="range-value" id="chamberValue">4,000</span>
+      </div>
 
-  <div class="fields">
+      <input
+        id="chamberRange"
+        type="range"
+        min="0"
+        max="8"
+        step="1"
+        value="4"
+        aria-label="Number of chambers"
+      >
 
+      <div class="range-ends">
+        <span>2 chambers</span>
+        <span>1,000,000 chambers</span>
+      </div>
+    </div>
 
-<div class="field">
-  <label for="denominator">Estimated risk: 1 in</label>
+    <div class="cylinder-wrap">
+      <div class="cylinder" aria-hidden="true"></div>
 
-  <input
-    id="denominator"
-    type="number"
-    min="2"
-    step="1"
-    value="100000"
-    inputmode="numeric"
-  >
+      <div class="cylinder-label">
+        <strong>1</strong>
+        <span>marked</span>
+      </div>
+    </div>
 
-  <div class="hint">
-    Enter the denominator from a credible, product-specific source.
-  </div>
-</div>
+    <p class="scale-note" id="scaleNote">
+      The cylinder is schematic. It represents one marked chamber
+      among 4,000—not forty literal chambers.
+    </p>
 
-<div class="field">
-  <label for="exposures">Number of exposures</label>
+    <div class="decision">
+      <div class="decision-question">
+        Would you voluntarily activate it once?
+      </div>
 
-  <input
-    id="exposures"
-    type="number"
-    min="1"
-    max="1000"
-    step="1"
-    value="1"
-    inputmode="numeric"
-  >
+      <div class="decision-buttons">
+        <button
+          class="button button-dark"
+          id="answerYes"
+        >
+          Yes, I would
+        </button>
 
-  <div class="hint">
-    For example: doses, boosters, procedures, or repeated exposures.
-  </div>
-</div>
+        <button
+          class="button button-light"
+          id="answerNo"
+        >
+          No, I would not
+        </button>
+      </div>
+    </div>
 
+    <div class="response" id="response"></div>
 
-  </div>
+    <div class="continue-row" id="continueRow">
+      <button
+        class="button button-dark"
+        id="continueButton"
+      >
+        Apply the same risk to a population
+      </button>
+    </div>
 
+  </section>
 
-  <div class="source">
-    <label for="source">
-      <strong>Source or research note</strong>
-    </label>
+  <section class="step dark-step" id="stepTwo">
 
+    <div class="step-header">
+      <div class="step-number">STEP 02 / 03</div>
 
-<input
-  id="source"
-  type="url"
-  placeholder="Paste the source URL and population here"
->
+      <div class="step-progress" aria-hidden="true">
+        <span class="step-dot active"></span>
+        <span class="step-dot active"></span>
+        <span class="step-dot"></span>
+      </div>
+    </div>
 
+    <div class="question">
+      <h2>Now stop looking at only one person.</h2>
 
-  </div>
+      <p class="question-copy">
+        If the same one-in-N estimate is applied repeatedly, the
+        individual probability remains small while the expected number
+        of human outcomes grows with the number of exposures.
+      </p>
+    </div>
 
+    <div class="population-form">
 
-  <div class="actions">
-    <button class="primary" id="pullOnce">
-      Pull once
-    </button>
+      <div class="field">
+        <label for="population">
+          People or exposures
+        </label>
 
+        <input
+          id="population"
+          type="number"
+          min="1"
+          step="1"
+          value="1000000"
+          inputmode="numeric"
+        >
+      </div>
 
-<button class="secondary" id="runAll">
-  Run all exposures
-</button>
+      <div class="field">
+        <label for="scenario">
+          Describe the decision
+        </label>
 
-<button class="secondary" id="reset">
-  Reset
-</button>
+        <select id="scenario">
+          <option value="people">
+            people receiving one exposure
+          </option>
 
+          <option value="doses">
+            doses administered
+          </option>
 
-  </div>
+          <option value="flights">
+            passengers taking one flight
+          </option>
 
+          <option value="procedures">
+            people undergoing one procedure
+          </option>
+        </select>
+      </div>
 
-  <div class="result">
-    <div class="big" id="percentage">0.001%</div>
+    </div>
 
+    <div class="population-result">
+      <span
+        class="population-number"
+        id="expectedNumber"
+      >
+        250
+      </span>
 
-<div class="sub" id="description">
-  1 exposure at 1 in 100,000
-</div>
+      <span
+        class="population-label"
+        id="expectedLabel"
+      >
+        expected outcomes among 1,000,000 people receiving one exposure
+      </span>
+    </div>
 
-<div class="counter" id="counter">
-  Showing 1 exposure
-</div>
+    <div
+      class="people-grid"
+      id="peopleGrid"
+      aria-label="Population-scale representation"
+    ></div>
 
+    <div class="grid-key">
+      Each visible dot represents an equal share of the entered
+      population. Red shows the expected share at the selected
+      one-in-N rate.
+    </div>
 
-  </div>
+    <div class="reflection" id="populationReflection">
+      The other 999,750 people may walk away without this outcome.
+      That does not make the remaining 250 people imaginary.
+    </div>
 
+    <div class="continue-row visible">
+      <button
+        class="button button-light"
+        id="comparisonButton"
+      >
+        Examine the historical case study
+      </button>
+    </div>
 
-<div
-class="chamber"
-id="chamber"
-aria-label="One-hundred-cell probability scale"
+  </section>
 
-</div>
+  <section class="step" id="stepThree">
 
+    <div class="step-header">
+      <div class="step-number">STEP 03 / 03</div>
 
-  <div class="caption" id="caption"></div>
+      <div class="step-progress" aria-hidden="true">
+        <span class="step-dot active"></span>
+        <span class="step-dot active"></span>
+        <span class="step-dot active"></span>
+      </div>
+    </div>
 
+    <div class="question">
+      <h2>The language changes how the risk feels.</h2>
 
-  <div class="note">
-    <strong>Important:</strong> the 100 circles are a scale model—not
-    100,000 literal chambers. At very small probabilities, less than one
-    complete circle may represent the calculated risk. The animation is
-    a visualization, not a prediction of what will happen to an individual.
-  </div>
+      <p class="question-copy">
+        The same historical estimate can be expressed as a percentage,
+        a fraction, an expected population count or a human consequence.
+        None of those descriptions should be allowed to erase the others.
+      </p>
+    </div>
 
+    <div class="comparison">
+
+      <div class="comparison-card">
+        <span>Compressed language</span>
+        <strong id="percentageCard">0.025%</strong>
+        <p>
+          A number small enough to read quickly and forget.
+        </p>
+      </div>
+
+      <div class="comparison-card">
+        <span>One-in-N language</span>
+        <strong id="fractionCard">1 in 4,000</strong>
+        <p>
+          One marked possibility surrounded by thousands of empty ones.
+        </p>
+      </div>
+
+      <div class="comparison-card">
+        <span>Historical case study</span>
+        <strong>Post-vaccinal encephalitis</strong>
+        <p>
+          Reported after primary historical smallpox vaccination,
+          with rates varying across period, population, vaccine strain,
+          age and study.
+        </p>
+      </div>
+
+      <div class="comparison-card">
+        <span>Personal language</span>
+        <strong>Your answer</strong>
+        <p id="personalAnswer">
+          You have not yet recorded whether you would accept the
+          selected chamber count.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="final-question">
+      If an intervention is promoted through population averages, who
+      decides how much individual risk is acceptable—and does the
+      person accepting the benefit have the right to make that decision
+      for the person who may bear the consequence?
+    </div>
+
+    <div class="decision">
+      <button
+        class="button button-dark"
+        id="startAgain"
+      >
+        Start again with another chamber count
+      </button>
+    </div>
+
+  </section>
 
 </section>
 
+<section class="sources">
 
-<section class="explain">
+  <div class="eyebrow">Historical case study</div>
 
+  <h2>Post-vaccinal encephalitis after smallpox vaccination</h2>
 
-  <div class="eyebrow">What the number means</div>
+  <a
+    class="source-link"
+    href="https://pubmed.ncbi.nlm.nih.gov/13937554/"
+    target="_blank"
+    rel="noopener"
+  >
+    <strong>
+      Prophylactic effect of antivaccinia gamma-globulin
+    </strong>
 
+    <span>
+      W. Nanning, Bulletin of the World Health Organization, 1962
+    </span>
+  </a>
 
-<h2> Repeated small probabilities are not zero. </h2> 
+  <a
+    class="source-link"
+    href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7125578/"
+    target="_blank"
+    rel="noopener"
+  >
+    <strong>
+      Post-vaccination encephalomyelitis: literature review
+    </strong>
 
-  <p>
-    Under the simplifying assumption that every exposure has the same
-    probability and that each exposure is independent, the probability
-    of experiencing at least one event after <em>k</em> exposures is:
-  </p>
+    <span>
+      Review discussing reported neurological complications after
+      several vaccines, including historical smallpox vaccination
+    </span>
+  </a>
 
-
-  <div class="formula">
-    P(at least one event) = 1 − (1 − 1/N)ᵏ
+  <div class="source-note">
+    <strong>What this preset represents:</strong> the initial
+    one-in-4,000 setting comes from a historical estimate involving
+    post-vaccinal encephalitis following primary smallpox vaccination
+    in adults in the Netherlands. The literature review reports a
+    wider historical range after primary smallpox vaccination. The
+    chamber can therefore be changed rather than presenting one
+    estimate as universal across every vaccine, population and era.
   </div>
-
-
-  <p>
-    Here, <strong>N</strong> is the denominator in “one in N,” and
-    <strong>k</strong> is the number of exposures.
-  </p>
-
-
-  <p>
-    For example, a hypothetical risk of one in 100,000 repeated ten times
-    produces an estimated cumulative probability of approximately
-    0.01%, assuming identical and independent exposures.
-  </p>
-
-
-  <p>
-    Real medical risks may not satisfy those assumptions. Risk can differ
-    by product, dose number, age, sex, prior reaction, health status,
-    interval, manufacturing period, outcome definition, and population.
-  </p>
-
-
-  <div class="checklist">
-
-
-<div class="check">
-  <strong>Per dose or per person?</strong>
-  Confirm what the denominator measures before repeating it.
-</div>
-
-<div class="check">
-  <strong>Which population?</strong>
-  A population average may not describe a particular subgroup.
-</div>
-
-<div class="check">
-  <strong>Reported or confirmed?</strong>
-  An event reported after exposure is not automatically established
-  as caused by that exposure.
-</div>
-
-<div class="check">
-  <strong>Point estimate or range?</strong>
-  Preserve confidence intervals and uncertainty whenever available.
-</div>
-
-<div class="check">
-  <strong>Same risk each time?</strong>
-  Later exposures may not have the same probability as the first.
-</div>
-
-<div class="check">
-  <strong>Overlapping outcomes?</strong>
-  Different adverse outcomes should not be added unless their overlap
-  and denominators are known.
-</div>
-
-
-  </div>
-
-
-  <div class="disclaimer">
-    <strong>Evidence rule:</strong> use product- and population-specific
-    estimates from a traceable source. Passive surveillance reports may
-    identify possible safety signals but generally cannot establish
-    incidence or causation by themselves. Conversely, a surveillance
-    system’s failure to identify an outcome does not establish that the
-    outcome is impossible.
-  </div>
-
 
 </section>
 
+</main>
 
-</main> 
+<footer>
+  A small probability is still attached to a complete human life.
+</footer>
 
 <script>
-const denominatorInput = document.getElementById("denominator");
-const exposuresInput = document.getElementById("exposures");
+const CHAMBER_OPTIONS = [
+  2,
+  10,
+  100,
+  1000,
+  4000,
+  10000,
+  80000,
+  100000,
+  1000000
+];
 
+const chamberRange =
+  document.getElementById("chamberRange");
 
-const percentageOutput = document.getElementById("percentage");
-const descriptionOutput = document.getElementById("description");
-const counterOutput = document.getElementById("counter");
-const captionOutput = document.getElementById("caption");
+const chamberValue =
+  document.getElementById("chamberValue");
 
-const chamber = document.getElementById("chamber");
+const scaleNote =
+  document.getElementById("scaleNote");
 
-const pullOnceButton = document.getElementById("pullOnce");
-const runAllButton = document.getElementById("runAll");
-const resetButton = document.getElementById("reset");
+const answerYes =
+  document.getElementById("answerYes");
 
-const cells = [];
+const answerNo =
+  document.getElementById("answerNo");
 
-let completedExposures = 0;
-let animationTimer = null;
+const response =
+  document.getElementById("response");
 
-for (let index = 0; index < 100; index++) {
-const cell = document.createElement("span");
+const continueRow =
+  document.getElementById("continueRow");
 
-cell.className = "cell";
-cell.setAttribute("aria-hidden", "true");
+const continueButton =
+  document.getElementById("continueButton");
 
-chamber.appendChild(cell);
-cells.push(cell);
+const population =
+  document.getElementById("population");
+
+const scenario =
+  document.getElementById("scenario");
+
+const expectedNumber =
+  document.getElementById("expectedNumber");
+
+const expectedLabel =
+  document.getElementById("expectedLabel");
+
+const peopleGrid =
+  document.getElementById("peopleGrid");
+
+const populationReflection =
+  document.getElementById("populationReflection");
+
+const comparisonButton =
+  document.getElementById("comparisonButton");
+
+const percentageCard =
+  document.getElementById("percentageCard");
+
+const fractionCard =
+  document.getElementById("fractionCard");
+
+const personalAnswer =
+  document.getElementById("personalAnswer");
+
+const startAgain =
+  document.getElementById("startAgain");
+
+let recordedAnswer = "";
+
+function currentDenominator() {
+  return CHAMBER_OPTIONS[
+    Number(chamberRange.value)
+  ];
 }
 
-function cleanDenominator() {
-const value = Math.floor(Number(denominatorInput.value));
-
-if (!Number.isFinite(value) || value < 2) {
-return 2;
+function formatNumber(value, maximumDigits = 2) {
+  return Number(value).toLocaleString(
+    undefined,
+    {
+      maximumFractionDigits:maximumDigits
+    }
+  );
 }
 
-return value;
+function formatPercent(denominator) {
+  const percentage =
+    100 / denominator;
+
+  if (percentage < 0.0001) {
+    return percentage.toExponential(2) + "%";
+  }
+
+  if (percentage < 0.01) {
+    return percentage.toFixed(4) + "%";
+  }
+
+  if (percentage < 1) {
+    return percentage.toFixed(3) + "%";
+  }
+
+  return percentage.toFixed(2) + "%";
 }
 
-function cleanExposures() {
-const value = Math.floor(Number(exposuresInput.value));
+function updateChamber() {
+  const denominator =
+    currentDenominator();
 
-if (!Number.isFinite(value) || value < 1) {
-return 1;
+  chamberValue.textContent =
+    denominator.toLocaleString();
+
+  scaleNote.textContent =
+    "The cylinder is schematic. It represents one marked chamber " +
+    "among " +
+    denominator.toLocaleString() +
+    "—not forty literal chambers.";
+
+  percentageCard.textContent =
+    formatPercent(denominator);
+
+  fractionCard.textContent =
+    "1 in " + denominator.toLocaleString();
+
+  recordedAnswer = "";
+  response.classList.remove("visible");
+  continueRow.classList.remove("visible");
+
+  updatePopulation();
 }
 
-return Math.min(value, 1000);
+function recordAnswer(answer) {
+  recordedAnswer = answer;
+
+  const denominator =
+    currentDenominator();
+
+  if (answer === "yes") {
+    response.textContent =
+      "At one marked chamber among " +
+      denominator.toLocaleString() +
+      ", this risk falls inside your personal comfort threshold.";
+  } else {
+    response.textContent =
+      "At one marked chamber among " +
+      denominator.toLocaleString() +
+      ", the empty chambers are not enough to make the decision feel acceptable.";
+  }
+
+  response.classList.add("visible");
+  continueRow.classList.add("visible");
+
+  personalAnswer.textContent =
+    answer === "yes"
+      ? "You said you would voluntarily accept one activation at 1 in " +
+        denominator.toLocaleString() +
+        "."
+      : "You said you would not voluntarily accept one activation at 1 in " +
+        denominator.toLocaleString() +
+        ".";
 }
 
-function cumulativeProbability(denominator, exposures) {
-return 1 - Math.pow(
-1 - (1 / denominator),
-exposures
+function showStep(stepNumber) {
+  document
+    .querySelectorAll(".step")
+    .forEach((step,index) => {
+      step.classList.toggle(
+        "active",
+        index === stepNumber - 1
+      );
+    });
+
+  document
+    .querySelector(".experience")
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+}
+
+function buildPeopleGrid() {
+  peopleGrid.replaceChildren();
+
+  for (let index = 0; index < 400; index++) {
+    const dot =
+      document.createElement("span");
+
+    dot.className = "person";
+    dot.setAttribute("aria-hidden","true");
+
+    peopleGrid.appendChild(dot);
+  }
+}
+
+function updatePeopleGrid(expected, total) {
+  const fraction =
+    Math.min(1,expected / total);
+
+  const dots =
+    peopleGrid.querySelectorAll(".person");
+
+  const exactMarked =
+    fraction * dots.length;
+
+  const markedCount =
+    expected > 0
+      ? Math.max(
+          1,
+          Math.round(exactMarked)
+        )
+      : 0;
+
+  dots.forEach((dot,index) => {
+    dot.classList.toggle(
+      "marked",
+      index < markedCount
+    );
+  });
+}
+
+function updatePopulation() {
+  const denominator =
+    currentDenominator();
+
+  const total =
+    Math.max(
+      1,
+      Number(population.value) || 1
+    );
+
+  const expected =
+    total / denominator;
+
+  expectedNumber.textContent =
+    expected < 1
+      ? formatNumber(expected,4)
+      : formatNumber(expected,2);
+
+  const scenarioText =
+    scenario.options[
+      scenario.selectedIndex
+    ].text;
+
+  expectedLabel.textContent =
+    "expected outcome" +
+    (expected === 1 ? "" : "s") +
+    " among " +
+    formatNumber(total,0) +
+    " " +
+    scenarioText;
+
+  const unaffected =
+    Math.max(0,total - expected);
+
+  populationReflection.textContent =
+    "Approximately " +
+    formatNumber(unaffected,0) +
+    " may not experience this particular outcome. " +
+    "That does not make the remaining " +
+    (
+      expected < 1
+        ? formatNumber(expected,4)
+        : formatNumber(expected,2)
+    ) +
+    " expected outcome" +
+    (expected === 1 ? "" : "s") +
+    " imaginary.";
+
+  updatePeopleGrid(expected,total);
+}
+
+chamberRange.addEventListener(
+  "input",
+  updateChamber
 );
-}
 
-function formatPercentage(probability) {
-const percent = probability * 100;
-
-if (percent === 0) {
-return "0%";
-}
-
-if (percent < 0.0001) {
-return percent.toExponential(2) + "%";
-}
-
-if (percent < 0.001) {
-return percent.toPrecision(2) + "%";
-}
-
-if (percent < 1) {
-return percent.toFixed(4) + "%";
-}
-
-return percent.toFixed(2) + "%";
-}
-
-function updateDisplay(exposureCount) {
-const denominator = cleanDenominator();
-const exposures = Math.max(1, exposureCount);
-const probability =
-cumulativeProbability(denominator, exposures);
-
-percentageOutput.textContent =
-formatPercentage(probability);
-
-descriptionOutput.textContent =
-exposures.toLocaleString() +
-" exposure" +
-(exposures === 1 ? "" : "s") +
-" at 1 in " +
-denominator.toLocaleString();
-
-counterOutput.textContent =
-completedExposures > 0
-? "Completed " +
-completedExposures.toLocaleString() +
-" of " +
-cleanExposures().toLocaleString() +
-" exposures"
-: "Showing the calculated probability";
-
-const expectedPerHundredThousand =
-probability * 100000;
-
-captionOutput.textContent =
-"Approximately " +
-expectedPerHundredThousand.toLocaleString(
-undefined,
-{ maximumFractionDigits:2 }
-) +
-" in 100,000 under the stated assumptions";
-
-const exactCells = probability * 100;
-const completeCells = Math.floor(exactCells);
-const partialCell = exactCells - completeCells;
-
-cells.forEach((cell, index) => {
-cell.classList.remove("active");
-
-if (index < completeCells) {
-  cell.classList.add("active");
-  cell.style.opacity = "1";
-} else if (
-  index === completeCells &&
-  partialCell > 0
-) {
-  cell.style.background =
-    `linear-gradient(
-      to top,
-      var(--red) ${partialCell * 100}%,
-      #ddd ${partialCell * 100}%
-    )`;
-
-  cell.style.opacity = ".85";
-} else {
-  cell.style.background = "#ddd";
-  cell.style.opacity = ".6";
-}
-
-
-});
-
-return probability;
-}
-
-function flashRandomCell() {
-const randomIndex =
-Math.floor(Math.random() * cells.length);
-
-const cell = cells[randomIndex];
-
-cell.classList.remove("flash");
-
-void cell.offsetWidth;
-
-cell.classList.add("flash");
-
-window.setTimeout(() => {
-cell.classList.remove("flash");
-updateDisplay(
-completedExposures || cleanExposures()
+answerYes.addEventListener(
+  "click",
+  () => recordAnswer("yes")
 );
-}, 650);
-}
 
-function stopAnimation() {
-if (animationTimer) {
-clearInterval(animationTimer);
-animationTimer = null;
-}
-}
+answerNo.addEventListener(
+  "click",
+  () => recordAnswer("no")
+);
 
-pullOnceButton.addEventListener("click", () => {
-stopAnimation();
+continueButton.addEventListener(
+  "click",
+  () => {
+    updatePopulation();
+    showStep(2);
+  }
+);
 
-const total = cleanExposures();
+population.addEventListener(
+  "input",
+  updatePopulation
+);
 
-if (completedExposures >= total) {
-completedExposures = 0;
-}
+scenario.addEventListener(
+  "change",
+  updatePopulation
+);
 
-completedExposures++;
+comparisonButton.addEventListener(
+  "click",
+  () => {
+    updatePopulation();
+    showStep(3);
+  }
+);
 
-updateDisplay(completedExposures);
-flashRandomCell();
-});
+startAgain.addEventListener(
+  "click",
+  () => {
+    chamberRange.value = 4;
+    population.value = 1000000;
+    scenario.value = "people";
 
-runAllButton.addEventListener("click", () => {
-stopAnimation();
+    updateChamber();
+    updatePopulation();
+    showStep(1);
+  }
+);
 
-const total = cleanExposures();
-const visibleAnimations = Math.min(total, 15);
-
-completedExposures = total;
-updateDisplay(total);
-
-let animationsCompleted = 0;
-
-flashRandomCell();
-
-animationTimer = setInterval(() => {
-animationsCompleted++;
-flashRandomCell();
-
-if (animationsCompleted >= visibleAnimations - 1) {
-  stopAnimation();
-}
-
-
-}, 140);
-});
-
-resetButton.addEventListener("click", () => {
-stopAnimation();
-
-completedExposures = 0;
-
-denominatorInput.value = 100000;
-exposuresInput.value = 1;
-
-updateDisplay(1);
-});
-
-denominatorInput.addEventListener("input", () => {
-completedExposures = 0;
-updateDisplay(cleanExposures());
-});
-
-exposuresInput.addEventListener("input", () => {
-completedExposures = 0;
-updateDisplay(cleanExposures());
-});
-
-updateDisplay(1);
-
+buildPeopleGrid();
+updateChamber();
+updatePopulation();
 </script>
-
 
 </body>
 </html>
-
-
